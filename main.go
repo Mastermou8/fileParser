@@ -1,14 +1,12 @@
 package main
 
 import (
+	"fileparser/internal/utils"
 	"log"
 	"os"
-
-	"github.com/pdfcpu/pdfcpu/pkg/api"
 )
 
 func main() {
-
 	root := "./pdf"
 	filesList := []string{}
 	files, err := os.ReadDir(root)
@@ -20,21 +18,8 @@ func main() {
 	}
 
 	for _, fileName := range filesList {
-		inputFile := root + "/" + fileName
-
-		if len(os.Args) > 1 {
-			inputFile = os.Args[1]
-		}
-
-		//const outputDir = "out"
-		if err := os.MkdirAll(root, 0o755); err != nil {
+		if err := utils.ExtractFirstPage(fileName, root); err != nil {
 			log.Fatal(err)
 		}
-
-		if err := api.ExtractPagesFile(inputFile, root, []string{"1"}, nil); err != nil {
-			log.Fatal(err)
-		}
-
-		log.Printf("Extracted page 1 from %s into ./%s\n", inputFile, root)
 	}
 }
